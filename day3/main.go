@@ -12,10 +12,22 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Printf("House Count: %d\n", countDeliveredHouses(strings.Split(string(input), "")))
+	fmt.Printf(
+		"Santa House Count: %d\n",
+		countDeliveredHouses(
+			deliveredHouses(
+				strings.Split(string(input), ""),
+			).positions,
+		),
+	)
+
+	fmt.Printf(
+		"Santa+Robo Santa House Count: %d\n",
+		countCombinedDeliveredHouses(strings.Split(string(input), "")),
+	)
 }
 
-func countDeliveredHouses(input []string) int {
+func deliveredHouses(input []string) grid {
 	places := NewGrid()
 
 	for _, direction := range input {
@@ -30,63 +42,60 @@ func countDeliveredHouses(input []string) int {
 		}
 	}
 
-	return places.uniquePositions()
+	return *places
 }
 
-func NewGrid() *grid {
-	g := new(grid)
-	g.positions = make([]point, 0)
-	g.positions = append(g.positions, point{x: 0, y: 0})
-
-	return g
+func countDeliveredHouses(houses []point) int {
+	return uniquePositions(houses)
 }
 
-type grid struct {
-	positions []point
-}
+func countCombinedDeliveredHouses(input []string) int {
+	santaHouses := deliveredHouses(splitEven(input))
+	roboSantaHouses := deliveredHouses(splitOdd(input))
 
-type point struct {
-	x, y int
-}
+	houses := santaHouses.positions
 
-func (g grid) lastPosition() point {
-	var lastPosition point
-
-	if len(g.positions) > 0 {
-		lastPosition = g.positions[len(g.positions)-1]
-	} else {
-		lastPosition = point{}
+	for _, h := range roboSantaHouses.positions {
+		houses = append(houses, h)
 	}
 
-	return lastPosition
+	return countDeliveredHouses(houses)
 }
 
-func (g grid) uniquePositions() int {
+func splitEven(strs []string) []string {
+	output := make([]string, 0)
+
+	for i, v := range strs {
+		if i%2 == 0 {
+			output = append(output, v)
+		}
+	}
+
+	return output
+}
+
+func splitOdd(strs []string) []string {
+	output := make([]string, 0)
+
+	for i, v := range strs {
+		if i%2 != 0 {
+			output = append(output, v)
+		}
+	}
+
+	return output
+}
+
+func uniquePositions(points []point) int {
 	var seen []point
 
-	for _, p := range g.positions {
+	for _, p := range points {
 		if !pointInSlice(seen, p) {
 			seen = append(seen, p)
 		}
 	}
 
 	return len(seen)
-}
-
-func (g *grid) right() {
-	g.positions = append(g.positions, point{g.lastPosition().x + 1, g.lastPosition().y})
-}
-
-func (g *grid) left() {
-	g.positions = append(g.positions, point{g.lastPosition().x - 1, g.lastPosition().y})
-}
-
-func (g *grid) up() {
-	g.positions = append(g.positions, point{g.lastPosition().x, g.lastPosition().y + 1})
-}
-
-func (g *grid) down() {
-	g.positions = append(g.positions, point{g.lastPosition().x, g.lastPosition().y - 1})
 }
 
 func pointInSlice(points []point, point point) bool {
