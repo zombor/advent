@@ -20,7 +20,7 @@ func (str betterRules) hasSubpairTwice() bool {
 
 		pair := letter + stringSlice[i+1]
 
-		if strings.Count(string(str), pair) == 2 {
+		if strings.Count(string(str), pair) >= 2 {
 			return true
 		}
 	}
