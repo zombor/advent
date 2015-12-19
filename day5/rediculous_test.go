@@ -6,9 +6,9 @@ import (
 
 func Test_ShortWords_AreAlwaysNaughty(t *testing.T) {
 	for _, str := range []string{"a", "aa", "aei"} {
-		input := str
+		input := rediculousRules(str)
 		expected := false
-		actual := isNice(input)
+		actual := input.isNice()
 
 		if expected != actual {
 			t.Errorf("Expected %s to be nice, but wasn't", input)
@@ -17,9 +17,9 @@ func Test_ShortWords_AreAlwaysNaughty(t *testing.T) {
 }
 
 func Test_Nice_ugknbfddgicrmopn(t *testing.T) {
-	input := "ugknbfddgicrmopn"
+	input := rediculousRules("ugknbfddgicrmopn")
 	expected := true
-	actual := isNice(input)
+	actual := input.isNice()
 
 	if expected != actual {
 		t.Errorf("Expected %s to be nice, but wasn't", input)
@@ -27,9 +27,9 @@ func Test_Nice_ugknbfddgicrmopn(t *testing.T) {
 }
 
 func Test_Nice_aaa(t *testing.T) {
-	input := "aaa"
+	input := rediculousRules("aaa")
 	expected := true
-	actual := isNice(input)
+	actual := input.isNice()
 
 	if expected != actual {
 		t.Errorf("Expected %s to be nice, but wasn't", input)
@@ -37,9 +37,9 @@ func Test_Nice_aaa(t *testing.T) {
 }
 
 func Test_Naughty_jchzalrnumimnmhp(t *testing.T) {
-	input := "jchzalrnumimnmhp"
+	input := rediculousRules("jchzalrnumimnmhp")
 	expected := false
-	actual := isNice(input)
+	actual := input.isNice()
 
 	if expected != actual {
 		t.Errorf("Expected %s to be naughty, but wasn't", input)
